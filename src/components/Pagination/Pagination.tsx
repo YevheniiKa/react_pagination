@@ -3,7 +3,7 @@ import { getNumbers } from '../../utils';
 import cn from 'classnames';
 type Props = {
   total: number;
-  perPage: string;
+  perPage: number;
   currentPage: number;
   onPageChange: (page: number) => void;
 };
@@ -21,16 +21,13 @@ export const Pagination: React.FC<Props> = ({
   function getItemsPerPage() {
     const copyItems = items;
 
-    return copyItems.slice(
-      (currentPage - 1) * +perPage,
-      currentPage * +perPage,
-    );
+    return copyItems.slice((currentPage - 1) * perPage, currentPage * perPage);
   }
 
   const visibleItems = getItemsPerPage();
   const pages: number[] = [];
 
-  for (let i = 1; i <= Math.ceil(total / +perPage); i++) {
+  for (let i = 1; i <= Math.ceil(total / perPage); i++) {
     pages.push(i);
   }
 
@@ -45,6 +42,16 @@ export const Pagination: React.FC<Props> = ({
     event.preventDefault();
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
+    }
+  };
+
+  const handleClickPageLink = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    page: number,
+  ) => {
+    event.preventDefault();
+    if (currentPage !== page) {
+      onPageChange(page);
     }
   };
 
@@ -72,9 +79,7 @@ export const Pagination: React.FC<Props> = ({
                 data-cy="pageLink"
                 className="page-link"
                 href={`#${page}`}
-                onClick={() => {
-                  onPageChange(page);
-                }}
+                onClick={event => handleClickPageLink(event, page)}
               >
                 {page}
               </a>

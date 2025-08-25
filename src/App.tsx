@@ -5,11 +5,11 @@ const total = 42;
 
 export const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState('5');
-  const handleItemsPerAgeButton = (
+  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+  const handleItemsPerPageChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setItemsPerPage(event.currentTarget.value);
+    setItemsPerPage(+event.currentTarget.value);
     if (currentPage !== 1) {
       setCurrentPage(1);
     }
@@ -36,8 +36,8 @@ export const App: React.FC = () => {
             data-cy="perPageSelector"
             id="perPageSelector"
             className="form-control"
-            onChange={handleItemsPerAgeButton}
-            defaultValue={'5'}
+            onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
           >
             <option value="3">3</option>
             <option value="5">5</option>
