@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { getNumbers } from '../../utils';
 import cn from 'classnames';
 type Props = {
@@ -18,7 +18,7 @@ export const Pagination: React.FC<Props> = ({
 }) => {
   const items = getNumbers(1, total).map(n => `Item ${n}`);
 
-  function getItemsPerAge() {
+  function getItemsPerPage() {
     const copyItems = items;
 
     return copyItems.slice(
@@ -27,14 +27,26 @@ export const Pagination: React.FC<Props> = ({
     );
   }
 
-  const visibleItems = getItemsPerAge();
+  const visibleItems = getItemsPerPage();
   const pages: number[] = [];
 
   for (let i = 1; i <= Math.ceil(total / +perPage); i++) {
     pages.push(i);
   }
 
-  useEffect(() => {}, [currentPage]);
+  const handleNextPageLink = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (currentPage < pages.length) {
+      onPageChange(currentPage + 1);
+    }
+  };
+
+  const handlePrevPageLink = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1);
+    }
+  };
 
   return (
     <>
@@ -45,7 +57,7 @@ export const Pagination: React.FC<Props> = ({
             className="page-link"
             href="#prev"
             aria-disabled={currentPage === 1}
-            onClick={() => onPageChange(pages.indexOf(currentPage))}
+            onClick={handlePrevPageLink}
           >
             «
           </a>
@@ -80,7 +92,7 @@ export const Pagination: React.FC<Props> = ({
             data-cy="nextLink"
             className="page-link"
             href="#next"
-            onClick={() => onPageChange(pages.indexOf(currentPage) + 2)}
+            onClick={handleNextPageLink}
           >
             »
           </a>
