@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import cn from 'classnames';
 
 type Props = {
@@ -14,7 +14,10 @@ export const Pagination: React.FC<Props> = ({
   currentPage,
   onPageChange,
 }) => {
-  const totalPages = Math.ceil(total / perPage);
+  const totalPages = useMemo(
+    () => Math.ceil(total / perPage),
+    [total, perPage],
+  );
 
   const start = total === 0 ? 0 : (currentPage - 1) * perPage + 1;
   const end = total === 0 ? 0 : Math.min(currentPage * perPage, total);
@@ -47,8 +50,11 @@ export const Pagination: React.FC<Props> = ({
     }
   };
 
-  const pages =
-    total === 0 ? [] : Array.from({ length: totalPages }, (_, i) => i + 1);
+  const pages = useMemo(
+    () =>
+      total === 0 ? [] : Array.from({ length: totalPages }, (_, i) => i + 1),
+    [total, totalPages],
+  );
 
   return (
     <>
