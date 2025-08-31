@@ -1,34 +1,29 @@
 import React, { useState } from 'react';
 import './App.css';
 import { Pagination } from './components/Pagination';
+
 const total = 42;
 
 export const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(5);
+
   const handleItemsPerPageChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setItemsPerPage(+event.currentTarget.value);
-    if (currentPage !== 1) {
-      setCurrentPage(1);
-    }
+    setCurrentPage(1);
   };
 
-  const itemsFrom = +itemsPerPage * currentPage - +itemsPerPage + 1;
-  const itemsTo =
-    +itemsPerPage * currentPage > total &&
-    currentPage === Math.ceil(total / +itemsPerPage)
-      ? total
-      : +itemsPerPage * currentPage;
+  const items = Array.from({ length: total }, (_, i) => `Item ${i + 1}`);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, total);
+  const visibleItems = items.slice(startIndex, endIndex);
 
   return (
     <div className="container">
       <h1>Items with Pagination</h1>
-
-      <p className="lead" data-cy="info">
-        Page {currentPage} (items {itemsFrom} - {itemsTo} of {total})
-      </p>
 
       <div className="form-group row">
         <div className="col-3 col-sm-2 col-xl-1">
@@ -50,14 +45,21 @@ export const App: React.FC = () => {
           items per page
         </label>
       </div>
+
       <Pagination
-        total={total} // total number of items to paginate
-        perPage={itemsPerPage} // number of items per page
-        currentPage={currentPage} /* optional with 1 by default */
+        total={total}
+        perPage={itemsPerPage}
+        currentPage={currentPage}
         onPageChange={setCurrentPage}
       />
+
+      <ul>
+        {visibleItems.map(item => (
+          <li data-cy="item" key={item}>
+            {item}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
-
-export default App;
